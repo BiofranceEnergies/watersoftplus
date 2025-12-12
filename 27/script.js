@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 4. CŒUR DU CALCULATEUR (LE CLICK "CALCULER") ---
-    // C'EST ICI QUE J'AI AJOUTÉ L'ENVOI AU TABLEUR
     const btnCalculate = document.querySelector('#btn-calculate');
     const step1 = document.getElementById('step-1');
     const step2 = document.getElementById('step-2');
@@ -81,11 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // --- NOUVEAU : ENVOI SILENCIEUX AU TABLEUR ---
-            // Cela enregistre la simulation même sans numéro de téléphone
             const simData = new FormData();
-            simData.append("phase", "Simulation (Sans N°)"); // Sera visible dans la colonne Phase
+            simData.append("phase", "Simulation (Sans N°)"); 
             simData.append("source", "Watersoft LP");
-            simData.append("phone", "Non renseigné"); // En attente du formulaire final
+            simData.append("phone", "Non renseigné"); 
             simData.append("foyer", selectedPeople + " personnes");
             simData.append("model_recommande", selectedModelName);
             simData.append("prix_ttc_estime", finalPriceTTC + " €");
@@ -161,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const formData = new FormData();
-            formData.append("phase", "Lead Qualifié"); // Met à jour le statut dans le sheet (nouvelle ligne)
+            formData.append("phase", "Lead Qualifié"); 
             formData.append("source", "Watersoft LP");
             formData.append("phone", rawPhone);
             formData.append("foyer", selectedPeople + " personnes");
@@ -209,7 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if(s1) s1.style.display = 'block';
     };
 
-    // --- 7. BANNIÈRE COOKIES & CONSENT MODE V2 ---
+    // ----------------------------------------------------------------------
+    // --- 7. BANNIÈRE COOKIES & CONSENT MODE V2 (Corrections Appliquées) ---
+    // ----------------------------------------------------------------------
     const cookieBanner = document.getElementById('consent-ui-box');
     const btnAccept = document.getElementById('cookie-accept');
     const btnRefuse = document.getElementById('cookie-refuse');
@@ -238,11 +238,27 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Consentement Google : ACCORDÉ ✅");
         }
     }
+    
+    // CORRECTION (NOUVELLE FONCTION) : Pour forcer l'état DENIED après un refus explicite
+    function denyGoogleConsent() {
+        if(typeof gtag === 'function') {
+            gtag('consent', 'update', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied'
+            });
+            console.log("Consentement Google : REFUSÉ ❌");
+        }
+    }
 
     const currentConsent = getCookie('watersoft_consent');
     
     if (currentConsent === 'accepted') {
         grantGoogleConsent();
+    } else if (currentConsent === 'refused') {
+        // CORRECTION 1 : Mettre à jour l'état Google Ads pour le refus existant
+        denyGoogleConsent(); 
     } else if (currentConsent === null) {
         setTimeout(function() {
             if(cookieBanner) {
@@ -269,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(btnRefuse) {
         btnRefuse.addEventListener('click', function() {
             setCookie('watersoft_consent', 'refused', 30); 
+            denyGoogleConsent(); // CORRECTION 2 : Appel de la fonction de refus après le clic
             
             if(cookieBanner) {
                 cookieBanner.style.display = 'none';

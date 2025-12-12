@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ----------------------------------------------------------------------
-    // --- 7. BANNIÈRE COOKIES & CONSENT MODE V2 (Corrections Appliquées) ---
+    // --- 7. BANNIÈRE COOKIES & CONSENT MODE V2 (Logique correcte) ---
     // ----------------------------------------------------------------------
     const cookieBanner = document.getElementById('consent-ui-box');
     const btnAccept = document.getElementById('cookie-accept');
@@ -239,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // CORRECTION (NOUVELLE FONCTION) : Pour forcer l'état DENIED après un refus explicite
     function denyGoogleConsent() {
         if(typeof gtag === 'function') {
             gtag('consent', 'update', {
@@ -257,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentConsent === 'accepted') {
         grantGoogleConsent();
     } else if (currentConsent === 'refused') {
-        // CORRECTION 1 : Mettre à jour l'état Google Ads pour le refus existant
+        // Mise à jour explicite DENIED si refusé précédemment
         denyGoogleConsent(); 
     } else if (currentConsent === null) {
         setTimeout(function() {
@@ -285,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(btnRefuse) {
         btnRefuse.addEventListener('click', function() {
             setCookie('watersoft_consent', 'refused', 30); 
-            denyGoogleConsent(); // CORRECTION 2 : Appel de la fonction de refus après le clic
+            denyGoogleConsent(); 
             
             if(cookieBanner) {
                 cookieBanner.style.display = 'none';

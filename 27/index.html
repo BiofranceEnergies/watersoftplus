@@ -14,7 +14,7 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
 
-        // État par défaut : TOUT REFUSÉ (Conforme CNIL)
+        // État par défaut : TOUT REFUSÉ (Required by Consent Mode v2 for default state)
         gtag('consent', 'default', {
             'ad_storage': 'denied',
             'ad_user_data': 'denied',
@@ -28,7 +28,7 @@
 
     <script>
         gtag('js', new Date());
-        gtag('config', 'AW-11242044118', { 'allow_enhanced_conversions': true });
+        // *** CORRECTION APPLIQUÉE : Suppression du gtag('config', ...) ici. ***
     </script>
 
     <script type="application/ld+json">

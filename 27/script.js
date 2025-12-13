@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1. CONFIGURATION & DONNÉES ---
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHYz40LwNcC0lYeymn_93CLK-LBfObF6reZPSjWLH4QDlzUb4dnkfpIkg1lWCTtTwL/exec";
     
-    // ID & LABEL GOOGLE ADS
+    // ID & LABEL GOOGLE ADS (Configuration Campagne adou27)
     const ADS_ID = 'AW-11242044118'; 
     const ADS_CONVERSION_LABEL = 'DO1tCKLg97sbENb1z_Ap'; 
 
@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             estimatedSavings = ecoEnergie + ecoProduits + ecoMateriel;
 
             // --- SIGNAL GOOGLE ADS 1 : SIMULATION ---
+            // Note: Dépend du 'config' présent dans le HTML
             if(typeof gtag === 'function') {
                 gtag('event', 'simulation_click', {
                     'event_category': 'Engagement',
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Signal Ads envoyé : Simulation");
             }
 
-            // --- NOUVEAU : ENVOI SILENCIEUX AU TABLEUR ---
+            // --- ENVOI SILENCIEUX AU TABLEUR (Google Sheets) ---
             const simData = new FormData();
             simData.append("phase", "Simulation (Sans N°)"); 
             simData.append("source", "Watersoft LP");
@@ -89,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
             simData.append("prix_ttc_estime", finalPriceTTC + " €");
             simData.append("economie_annuelle", estimatedSavings + " €/an");
             
-            // Envoi des données (ne bloque pas la navigation)
             fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: simData, mode: "no-cors" })
             .then(() => console.log("Données simulation envoyées au Sheet"))
             .catch(e => console.error("Erreur envoi sheet", e));
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const phoneInput = finalForm.querySelector('input[type="tel"]');
         const submitBtn = finalForm.querySelector('button');
 
-        // Formatage du numéro
+        // Formatage du numéro à la volée
         if(phoneInput) {
             phoneInput.addEventListener('input', function (e) {
                 let v = e.target.value.replace(/\D/g, "").substring(0, 10);
@@ -171,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append("utm_source", params.get("utm_source") || "");
             formData.append("utm_campaign", params.get("utm_campaign") || "");
 
+            // Envoi au Google Sheet
             fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: formData, mode: "no-cors" })
             .then(() => {
                 if(submitBtn) {
@@ -185,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'value': 1.0,
                         'currency': 'EUR'
                     });
+                    console.log("Conversion Ads envoyée !");
                 }
 
                 alert("Merci ! Un expert Watersoft vous contactera au " + phoneInput.value + ".");
@@ -208,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ----------------------------------------------------------------------
-    // --- 7. BANNIÈRE COOKIES & CONSENT MODE V2 (Logique correcte) ---
+    // --- 7. BANNIÈRE COOKIES & CONSENT MODE V2 (Logique Validée) ---
     // ----------------------------------------------------------------------
     const cookieBanner = document.getElementById('consent-ui-box');
     const btnAccept = document.getElementById('cookie-accept');
@@ -256,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentConsent === 'accepted') {
         grantGoogleConsent();
     } else if (currentConsent === 'refused') {
-        // Mise à jour explicite DENIED si refusé précédemment
         denyGoogleConsent(); 
     } else if (currentConsent === null) {
         setTimeout(function() {

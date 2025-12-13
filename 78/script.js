@@ -3,9 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1. CONFIGURATION & DONNÉES ---
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHYz40LwNcC0lYeymn_93CLK-LBfObF6reZPSjWLH4QDlzUb4dnkfpIkg1lWCTtTwL/exec";
     
-    // ID & LABEL GOOGLE ADS
+    // ID GOOGLE ADS (Ton compte)
     const ADS_ID = 'AW-11242044118'; 
-    const ADS_CONVERSION_LABEL = 'DO1tCKLg97sbENb1z_Ap'; 
+    
+    // LABELS DE CONVERSION (Les clés spécifiques)
+    const LABEL_LEAD_FINAL = 'DO1tCKLg97sbENb1z_Ap';        // Conversion Principale (Formulaire)
+    const LABEL_SIMULATION = 'M1S7CInK-NAbENb1z_Ap';        // Conversion Secondaire (Calcul Prix)
 
     // Données de calcul
     const TVA_RATE = 0.10; 
@@ -46,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 4. CŒUR DU CALCULATEUR (LE CLICK "CALCULER") ---
-    // C'EST ICI QUE J'AI AJOUTÉ L'ENVOI AU TABLEUR
     const btnCalculate = document.querySelector('#btn-calculate');
     const step1 = document.getElementById('step-1');
     const step2 = document.getElementById('step-2');
@@ -71,27 +73,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const ecoMateriel = 80; 
             estimatedSavings = ecoEnergie + ecoProduits + ecoMateriel;
 
-            // --- SIGNAL GOOGLE ADS 1 : SIMULATION ---
+            // --- SIGNAL GOOGLE ADS : SIMULATION (SECONDAIRE) ---
             if(typeof gtag === 'function') {
-                gtag('event', 'simulation_click', {
-                    'event_category': 'Engagement',
-                    'event_label': 'Calcul : ' + selectedModelName
+                gtag('event', 'conversion', {
+                    'send_to': ADS_ID + '/' + LABEL_SIMULATION,  // Envoi vers "Clic Simulateur"
+                    'value': 1.0,
+                    'currency': 'EUR'
                 });
-                console.log("Signal Ads envoyé : Simulation");
+                console.log("Signal Ads envoyé : Clic Simulateur (Secondaire)");
             }
 
-            // --- NOUVEAU : ENVOI SILENCIEUX AU TABLEUR ---
-            // Cela enregistre la simulation même sans numéro de téléphone
+            // --- ENVOI SILENCIEUX AU TABLEUR (Google Sheets) ---
             const simData = new FormData();
-            simData.append("phase", "Simulation (Sans N°)"); // Sera visible dans la colonne Phase
+            simData.append("phase", "Simulation (Sans N°)"); 
             simData.append("source", "Watersoft LP");
-            simData.append("phone", "Non renseigné"); // En attente du formulaire final
+            simData.append("phone", "Non renseigné"); 
             simData.append("foyer", selectedPeople + " personnes");
             simData.append("model_recommande", selectedModelName);
             simData.append("prix_ttc_estime", finalPriceTTC + " €");
             simData.append("economie_annuelle", estimatedSavings + " €/an");
             
-            // Envoi des données (ne bloque pas la navigation)
             fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: simData, mode: "no-cors" })
             .then(() => console.log("Données simulation envoyées au Sheet"))
             .catch(e => console.error("Erreur envoi sheet", e));
@@ -118,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(btnBottom) {
         btnBottom.addEventListener('click', function(e) {
             e.preventDefault(); 
-            // --- SIGNAL GOOGLE ADS 2 : CTA BAS ---
+            // Signal simple d'engagement (pas de conversion ici)
             if(typeof gtag === 'function') {
                 gtag('event', 'bottom_cta_click', {
                     'event_category': 'Engagement',
@@ -136,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const phoneInput = finalForm.querySelector('input[type="tel"]');
         const submitBtn = finalForm.querySelector('button');
 
-        // Formatage du numéro
+        // Formatage du numéro à la volée
         if(phoneInput) {
             phoneInput.addEventListener('input', function (e) {
                 let v = e.target.value.replace(/\D/g, "").substring(0, 10);
@@ -161,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const formData = new FormData();
-            formData.append("phase", "Lead Qualifié"); // Met à jour le statut dans le sheet (nouvelle ligne)
+            formData.append("phase", "Lead Qualifié"); 
             formData.append("source", "Watersoft LP");
             formData.append("phone", rawPhone);
             formData.append("foyer", selectedPeople + " personnes");
@@ -173,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append("utm_source", params.get("utm_source") || "");
             formData.append("utm_campaign", params.get("utm_campaign") || "");
 
+            // Envoi au Google Sheet
             fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: formData, mode: "no-cors" })
             .then(() => {
                 if(submitBtn) {
@@ -180,13 +182,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitBtn.style.backgroundColor = "#22c55e";
                 }
                 
-                // --- SIGNAL GOOGLE ADS 3 : CONVERSION FINALE ---
+                // --- SIGNAL GOOGLE ADS : CONVERSION PRINCIPALE ---
                 if(typeof gtag === 'function') {
                     gtag('event', 'conversion', {
-                        'send_to': ADS_ID + '/' + ADS_CONVERSION_LABEL,
+                        'send_to': ADS_ID + '/' + LABEL_LEAD_FINAL, // Envoi vers "Formulaire Lead"
                         'value': 1.0,
                         'currency': 'EUR'
                     });
+                    console.log("Conversion Ads envoyée : Lead Final !");
                 }
 
                 alert("Merci ! Un expert Watersoft vous contactera au " + phoneInput.value + ".");
@@ -209,7 +212,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if(s1) s1.style.display = 'block';
     };
 
+    // ----------------------------------------------------------------------
     // --- 7. BANNIÈRE COOKIES & CONSENT MODE V2 ---
+    // ----------------------------------------------------------------------
     const cookieBanner = document.getElementById('consent-ui-box');
     const btnAccept = document.getElementById('cookie-accept');
     const btnRefuse = document.getElementById('cookie-refuse');
@@ -238,11 +243,25 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Consentement Google : ACCORDÉ ✅");
         }
     }
+    
+    function denyGoogleConsent() {
+        if(typeof gtag === 'function') {
+            gtag('consent', 'update', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied'
+            });
+            console.log("Consentement Google : REFUSÉ ❌");
+        }
+    }
 
     const currentConsent = getCookie('watersoft_consent');
     
     if (currentConsent === 'accepted') {
         grantGoogleConsent();
+    } else if (currentConsent === 'refused') {
+        denyGoogleConsent(); 
     } else if (currentConsent === null) {
         setTimeout(function() {
             if(cookieBanner) {
@@ -269,6 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(btnRefuse) {
         btnRefuse.addEventListener('click', function() {
             setCookie('watersoft_consent', 'refused', 30); 
+            denyGoogleConsent(); 
             
             if(cookieBanner) {
                 cookieBanner.style.display = 'none';

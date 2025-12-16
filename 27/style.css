@@ -587,3 +587,37 @@ body {
     .tech-spec-card { padding: 15px; }
     .spec-subtitle { display: block; margin-left: 0; margin-top: 2px; }
 }
+
+/* =========================================
+   FIX URGENT : FORMULAIRE MOBILE
+   (Empile le champ et le bouton verticalement sur petit écran)
+   ========================================= */
+
+@media (max-width: 768px) {
+    
+    /* 1. On force le conteneur du formulaire à s'afficher en colonne */
+    /* Je cible large pour être sûr que ça marche quel que soit ton HTML */
+    .model-box form, 
+    .model-box div[style*="flex"], 
+    .simulator-block form {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important; /* Espace entre le champ et le bouton */
+    }
+
+    /* 2. On force le champ de saisie à prendre 100% de la largeur */
+    .sim-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 3. On force le bouton à prendre 100% de la largeur */
+    .btn-primary {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        justify-content: center !important; /* Centre le texte et la flèche */
+    }
+}

@@ -587,3 +587,34 @@ body {
     .tech-spec-card { padding: 15px; }
     .spec-subtitle { display: block; margin-left: 0; margin-top: 2px; }
 }
+
+/* =========================================
+   FIX MOBILE FINAL (Cible la classe .sim-row)
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* 1. On force la ligne à devenir une colonne */
+    .sim-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        align-items: stretch !important; /* Force la largeur max */
+    }
+
+    /* 2. On gonfle le champ téléphone */
+    .sim-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        flex: none !important; /* Empêche le champ de rétrécir */
+        height: 50px !important; /* Hauteur confortable pour le doigt */
+    }
+
+    /* 3. On gonfle le bouton */
+    .btn-primary {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        justify-content: center !important;
+    }
+}

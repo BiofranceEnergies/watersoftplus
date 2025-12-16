@@ -589,35 +589,32 @@ body {
 }
 
 /* =========================================
-   FIX URGENT : FORMULAIRE MOBILE
-   (Empile le champ et le bouton verticalement sur petit écran)
+   FIX MOBILE FINAL (Cible la classe .sim-row)
    ========================================= */
-
 @media (max-width: 768px) {
-    
-    /* 1. On force le conteneur du formulaire à s'afficher en colonne */
-    /* Je cible large pour être sûr que ça marche quel que soit ton HTML */
-    .model-box form, 
-    .model-box div[style*="flex"], 
-    .simulator-block form {
+
+    /* 1. On force la ligne à devenir une colonne */
+    .sim-row {
         display: flex !important;
         flex-direction: column !important;
-        gap: 15px !important; /* Espace entre le champ et le bouton */
+        gap: 15px !important;
+        align-items: stretch !important; /* Force la largeur max */
     }
 
-    /* 2. On force le champ de saisie à prendre 100% de la largeur */
+    /* 2. On gonfle le champ téléphone */
     .sim-input {
         width: 100% !important;
         max-width: 100% !important;
-        margin: 0 !important;
         box-sizing: border-box !important;
+        flex: none !important; /* Empêche le champ de rétrécir */
+        height: 50px !important; /* Hauteur confortable pour le doigt */
     }
 
-    /* 3. On force le bouton à prendre 100% de la largeur */
+    /* 3. On gonfle le bouton */
     .btn-primary {
         width: 100% !important;
         max-width: 100% !important;
-        margin-left: 0 !important;
-        justify-content: center !important; /* Centre le texte et la flèche */
+        margin: 0 !important;
+        justify-content: center !important;
     }
 }

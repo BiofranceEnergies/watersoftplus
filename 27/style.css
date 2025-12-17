@@ -654,3 +654,10 @@ body {
     justify-content: center;
     border: 2px solid #0a1128; /* Petit bord sombre pour détacher du fond */
 }
+/* =========================================
+   MODIFICATION HERO : MASQUER LES SATELLITES
+   ========================================= */
+/* On cache les cartes flottantes pour laisser la place à la photo du technicien */
+.float-stat {
+    display: none !important;
+}

@@ -618,3 +618,39 @@ body {
         justify-content: center !important;
     }
 }
+/* --- STYLE AVATAR EXPERT (HUMAN TOUCH) --- */
+
+.expert-avatar-wrapper {
+    position: relative;
+    width: 55px;  /* Un peu plus gros que l'ancienne icône pour bien voir le visage */
+    height: 55px;
+    flex-shrink: 0;
+    margin-right: 5px;
+}
+
+.expert-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* Rend l'image ronde */
+    object-fit: cover;  /* Assure que le visage n'est pas déformé */
+    border: 2px solid #22c55e; /* Bordure verte pour dire "Validé" */
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); /* Glow vert subtil */
+}
+
+/* Le petit check vert qui flotte sur la photo */
+.expert-check-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: #22c55e;
+    color: #020408;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #0a1128; /* Petit bord sombre pour détacher du fond */
+}

@@ -661,3 +661,21 @@ body {
 .float-stat {
     display: none !important;
 }
+/* =========================================
+   CORRECTION MOBILE : IMAGE TECHNICIEN
+   ========================================= */
+@media (max-width: 768px) {
+    /* On cible le conteneur de l'image pour réduire les marges */
+    .hero-visual-col {
+        margin-top: 0px !important; /* On annule la marge du haut */
+        padding-top: 20px; /* Juste un petit espace */
+        padding-bottom: 0px;
+    }
+
+    /* On cible l'image elle-même pour l'agrandir */
+    .splash-img {
+        max-height: none !important; /* On fait sauter la limite de hauteur */
+        width: 90% !important;       /* On lui dit de prendre 90% de la largeur de l'écran */
+        max-width: 500px;            /* Sécurité pour les très grands téléphones */
+    }
+}

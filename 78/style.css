@@ -587,6 +587,7 @@ body {
     .tech-spec-card { padding: 15px; }
     .spec-subtitle { display: block; margin-left: 0; margin-top: 2px; }
 }
+
 /* =========================================
    FIX MOBILE FINAL (Cible la classe .sim-row)
    ========================================= */
@@ -618,9 +619,10 @@ body {
     }
 }
 /* --- STYLE AVATAR EXPERT (HUMAN TOUCH) --- */
+
 .expert-avatar-wrapper {
     position: relative;
-    width: 55px;  
+    width: 55px;  /* Un peu plus gros que l'ancienne icône pour bien voir le visage */
     height: 55px;
     flex-shrink: 0;
     margin-right: 5px;
@@ -629,12 +631,13 @@ body {
 .expert-avatar-img {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #22c55e;
-    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    border-radius: 50%; /* Rend l'image ronde */
+    object-fit: cover;  /* Assure que le visage n'est pas déformé */
+    border: 2px solid #22c55e; /* Bordure verte pour dire "Validé" */
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); /* Glow vert subtil */
 }
 
+/* Le petit check vert qui flotte sur la photo */
 .expert-check-badge {
     position: absolute;
     bottom: -2px;
@@ -649,5 +652,86 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid #0a1128;
+    border: 2px solid #0a1128; /* Petit bord sombre pour détacher du fond */
+}
+/* =========================================
+   MODIFICATION HERO : MASQUER LES SATELLITES
+   ========================================= */
+/* On cache les cartes flottantes pour laisser la place à la photo du technicien */
+.float-stat {
+    display: none !important;
+}
+/* =========================================
+   CORRECTION MOBILE : IMAGE TECHNICIEN
+   ========================================= */
+@media (max-width: 768px) {
+    /* On cible le conteneur de l'image pour réduire les marges */
+    .hero-visual-col {
+        margin-top: 0px !important; /* On annule la marge du haut */
+        padding-top: 20px; /* Juste un petit espace */
+        padding-bottom: 0px;
+    }
+
+    /* On cible l'image elle-même pour l'agrandir */
+    .splash-img {
+        max-height: none !important; /* On fait sauter la limite de hauteur */
+        width: 90% !important;       /* On lui dit de prendre 90% de la largeur de l'écran */
+        max-width: 500px;            /* Sécurité pour les très grands téléphones */
+    }
+}
+/* =========================================
+   CORRECTION FINALE MOBILE (ANTI-SCROLL & TAILLES)
+   ========================================= */
+
+/* 1. Filet de sécurité global : Interdit tout dépassement horizontal */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    
+    /* 2. On sécurise les conteneurs pour qu'ils restent dans l'écran */
+    .hero-container, .container, .nav-container {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        width: 100% !important;
+        max-width: 100vw !important; /* Force la largeur max à la taille de l'écran */
+        overflow-x: hidden;
+        box-sizing: border-box;
+    }
+
+    /* 3. On réduit le GROS titre (NOVAQUA) qui déborde souvent */
+    .visual-h1 {
+        font-size: 2.2rem !important; /* Beaucoup plus petit qu'avant (3.5rem) */
+        line-height: 1.1 !important;
+        margin-bottom: 15px !important;
+        word-wrap: break-word; /* Coupe le mot s'il est trop long */
+        hyphens: auto;
+    }
+
+    /* 4. On calme le sous-titre description */
+    .seo-h1-text {
+        font-size: 0.95rem !important; 
+        text-align: left !important;
+        max-width: 100% !important;
+    }
+
+    /* 5. On centre et calibre l'image du technicien */
+    .splash-img {
+        width: 100% !important;
+        max-width: 350px !important; /* Limite la largeur pour pas qu'il soit énorme */
+        height: auto !important;
+        margin: 0 auto !important;
+        display: block;
+    }
+
+    /* 6. Le simulateur doit rester sage dans sa boite */
+    .simulator-block {
+        width: 100% !important;
+        padding: 20px !important; /* Un peu plus d'air */
+        margin: 0 !important;
+        box-sizing: border-box; 
+    }
 }

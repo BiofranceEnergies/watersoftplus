@@ -679,3 +679,59 @@ body {
         max-width: 500px;            /* Sécurité pour les très grands téléphones */
     }
 }
+/* =========================================
+   CORRECTION FINALE MOBILE (ANTI-SCROLL & TAILLES)
+   ========================================= */
+
+/* 1. Filet de sécurité global : Interdit tout dépassement horizontal */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    
+    /* 2. On sécurise les conteneurs pour qu'ils restent dans l'écran */
+    .hero-container, .container, .nav-container {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        width: 100% !important;
+        max-width: 100vw !important; /* Force la largeur max à la taille de l'écran */
+        overflow-x: hidden;
+        box-sizing: border-box;
+    }
+
+    /* 3. On réduit le GROS titre (NOVAQUA) qui déborde souvent */
+    .visual-h1 {
+        font-size: 2.2rem !important; /* Beaucoup plus petit qu'avant (3.5rem) */
+        line-height: 1.1 !important;
+        margin-bottom: 15px !important;
+        word-wrap: break-word; /* Coupe le mot s'il est trop long */
+        hyphens: auto;
+    }
+
+    /* 4. On calme le sous-titre description */
+    .seo-h1-text {
+        font-size: 0.95rem !important; 
+        text-align: left !important;
+        max-width: 100% !important;
+    }
+
+    /* 5. On centre et calibre l'image du technicien */
+    .splash-img {
+        width: 100% !important;
+        max-width: 350px !important; /* Limite la largeur pour pas qu'il soit énorme */
+        height: auto !important;
+        margin: 0 auto !important;
+        display: block;
+    }
+
+    /* 6. Le simulateur doit rester sage dans sa boite */
+    .simulator-block {
+        width: 100% !important;
+        padding: 20px !important; /* Un peu plus d'air */
+        margin: 0 !important;
+        box-sizing: border-box; 
+    }
+}

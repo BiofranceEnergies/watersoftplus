@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let finalPriceTTC = 0;
     let estimatedSavings = 0;
 
+    // --- LOGIQUE DE DÉTECTION DE LA SOURCE (Adou 27, 28, etc) ---
+    // On récupère la valeur du champ caché qu'on a ajouté dans le HTML
+    const sourceInput = document.getElementById('source_lp');
+    // Si le champ existe, on prend sa valeur, sinon on met "Watersoft LP" par défaut
+    const currentSource = sourceInput ? sourceInput.value : "Watersoft LP";
+
     // --- 2. GESTION DES MODALES ---
     window.openModal = function(modalId) {
         const m = document.getElementById(modalId);
@@ -69,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // B. Calculs Financiers
             finalPriceTTC = Math.round(priceHT * (1 + TVA_RATE));
             const ecoEnergie = Math.round(selectedPeople * 800 * 0.27 * 0.1); 
-            const ecoProduits = Math.round(selectedPeople * 220 * 0.40);       
+            const ecoProduits = Math.round(selectedPeople * 220 * 0.40);        
             const ecoMateriel = 80; 
             estimatedSavings = ecoEnergie + ecoProduits + ecoMateriel;
 
@@ -86,7 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // --- ENVOI SILENCIEUX AU TABLEUR (Google Sheets) ---
             const simData = new FormData();
             simData.append("phase", "Simulation (Sans N°)"); 
-            simData.append("source", "Watersoft LP");
+            
+            // ICI : On utilise la variable dynamique currentSource au lieu du texte en dur
+            simData.append("source", currentSource);
+            
             simData.append("phone", "Non renseigné"); 
             simData.append("foyer", selectedPeople + " personnes");
             simData.append("model_recommande", selectedModelName);
@@ -94,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             simData.append("economie_annuelle", estimatedSavings + " €/an");
             
             fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: simData, mode: "no-cors" })
-            .then(() => console.log("Données simulation envoyées au Sheet"))
+            .then(() => console.log("Données simulation envoyées au Sheet (Source: " + currentSource + ")"))
             .catch(e => console.error("Erreur envoi sheet", e));
 
             // C. Injection des données dans le HTML
@@ -163,7 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const formData = new FormData();
             formData.append("phase", "Lead Qualifié"); 
-            formData.append("source", "Watersoft LP");
+            
+            // ICI : On utilise la variable dynamique currentSource
+            formData.append("source", currentSource);
+            
             formData.append("phone", rawPhone);
             formData.append("foyer", selectedPeople + " personnes");
             formData.append("model_recommande", selectedModelName);
